@@ -1,0 +1,42 @@
+﻿@page "/products"
+@using BlazorCRUDApp.Shared.Shared
+@using BlazorCRUDApp.Client.Services
+
+<h3>Products</h3>
+
+@if (products == null)
+{
+    <span class="spinner spinner-border"></span>
+}
+else if (products.Count == 0)
+{
+    <p>No products found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var product in products)
+        {
+            <li>@product.Name - @product.Price - @product.Category.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    public List<Product>? products = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await ProductService.GetAllProductsAsync();
+
+        if (response.Success && response.Data != null)
+        {
+            products = response.Data;
+        }
+        else
+        {
+            products = new List<Product>();
+        }
+    }
+}
+
