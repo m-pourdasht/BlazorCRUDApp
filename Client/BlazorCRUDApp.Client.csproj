@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Shared\BlazorCRUDApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Documentation\" />
+  </ItemGroup>
+
 </Project>

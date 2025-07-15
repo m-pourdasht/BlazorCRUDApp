@@ -1,4 +1,5 @@
-﻿using BlazorCRUDApp.Shared.Shared;
+﻿//Defines what operations are available for Category.
+using BlazorCRUDApp.Shared.Shared;
 
 namespace BlazorCRUDApp.Server.Repository.Interfaces
 {

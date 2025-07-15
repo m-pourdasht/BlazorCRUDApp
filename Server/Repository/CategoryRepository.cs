@@ -1,4 +1,6 @@
-﻿using BlazorCRUDApp.Server.Data;
+﻿//It interacts directly with the database through EF Core.
+
+using BlazorCRUDApp.Server.Data;
 using BlazorCRUDApp.Server.Repository.Interfaces;
 using BlazorCRUDApp.Shared.Shared;
 using Microsoft.EntityFrameworkCore;

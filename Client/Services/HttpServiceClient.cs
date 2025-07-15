@@ -1,4 +1,5 @@
-﻿using BlazorCRUDApp.Shared.Interfaces;
+﻿//This layer is located on the client side and its job is to send requests to the API and receive responses.
+using BlazorCRUDApp.Shared.Interfaces;
 using System.Net.Http.Json;
 using BlazorCRUDApp.Shared.Responses;
 

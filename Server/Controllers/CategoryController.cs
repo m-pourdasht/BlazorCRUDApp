@@ -1,4 +1,5 @@
-﻿using BlazorCRUDApp.Shared.Interfaces;
+﻿//This layer is located on the Server side and receives HTTP requests and forwards them to the Service.
+using BlazorCRUDApp.Shared.Interfaces;
 using BlazorCRUDApp.Shared.Responses;
 using BlazorCRUDApp.Shared.Shared;
 using Microsoft.AspNetCore.Mvc;

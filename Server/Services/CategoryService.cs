@@ -1,4 +1,5 @@
-﻿using BlazorCRUDApp.Server.Repository.Interfaces;
+﻿//The business logic is implemented in this section. This layer is located between the Controller and the Repository.
+using BlazorCRUDApp.Server.Repository.Interfaces;
 using BlazorCRUDApp.Server.UnitOfWork;
 using BlazorCRUDApp.Shared.Interfaces;
 using BlazorCRUDApp.Shared.Responses;
