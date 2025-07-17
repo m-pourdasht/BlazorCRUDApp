@@ -6,8 +6,7 @@ namespace BlazorCRUDApp.Server.UnitOfWork
 {
     public interface IUnitOfWork
     {
-        IProductRepository ProductRepository { get; }
-        ICategoryRepository CategoryRepository { get; }
-        Task<int> SaveChangesAsync();
+        IRepository<T> Repository<T>() where T : class;
+        Task<bool> SaveChangesAsync();
     }
 }

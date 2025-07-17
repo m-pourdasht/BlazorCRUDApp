@@ -12,6 +12,17 @@ namespace BlazorCRUDApp.Server.Services
         {
             _httpClient = httpClient;
         }
+
+        public System.Threading.Tasks.Task Delete(string url)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T> Get<T>(string url)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<ServiceResponse<T>> GetAsync<T>(string url)
         {
             var response = await _httpClient.GetAsync(url);
@@ -22,6 +33,24 @@ namespace BlazorCRUDApp.Server.Services
                 Message = "Error retrieving data"
             };
 
+        }
+        public
+            async System.Threading.Tasks.Task Post<T>(string url, T data)
+        {
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Error posting data to {url}: {response.ReasonPhrase}");
+            }
+        }
+        public
+            async System.Threading.Tasks.Task Put<T>(string url, T data)
+        {
+            var response = await _httpClient.PutAsJsonAsync(url, data);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Error updating data at {url}: {response.ReasonPhrase}");
+            }
         }
     }
 }

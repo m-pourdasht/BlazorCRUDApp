@@ -1,13 +1,11 @@
 using Microsoft.OpenApi.Models;
 using BlazorCRUDApp.Server.Data;
-using BlazorCRUDApp.Server.Services;
 using BlazorCRUDApp.Server.UnitOfWork;
-using BlazorCRUDApp.Shared.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json.Serialization;
-using BlazorCRUDApp.Server.Repository.Interfaces;
-using BlazorCRUDApp.Server.Repository;
-using BlazorCRUDApp.Server.Repository.Repositories;
+using BlazorCRUDApp.Shared.Interfaces;
+using BlazorCRUDApp.Server.Services;
+using Microsoft.Extensions.DependencyInjection;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,11 +34,18 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddHttpClient(); // for HttpClient injection
+//builder.Services.AddHttpClient<IHttpService, HttpServiceServer>(client =>
+//{
+//    client.BaseAddress = new Uri("https://localhost:7194/api/"); 
+//});
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IHttpService, HttpServiceServer>();
 
-builder .Services.AddControllers();
+
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

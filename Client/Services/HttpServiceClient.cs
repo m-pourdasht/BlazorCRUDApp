@@ -17,5 +17,25 @@ namespace BlazorCRUDApp.Client.Services
             var result = await _httpClient.GetFromJsonAsync<ServiceResponse<T>>(url);
             return result!;
         }
+        public async Task<T> Get<T>(string url)
+        {
+            var result = await _httpClient.GetFromJsonAsync<T>(url);
+            return result!;
+        }
+        public async Task Post<T>(string url, T data)
+        {
+            var response = await _httpClient.PostAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task Put<T>(string url, T data)
+        {
+            var response = await _httpClient.PutAsJsonAsync(url, data);
+            response.EnsureSuccessStatusCode();
+        }
+        public async Task Delete(string url)
+        {
+            var response = await _httpClient.DeleteAsync(url);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }

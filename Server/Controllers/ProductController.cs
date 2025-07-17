@@ -1,7 +1,9 @@
-﻿using BlazorCRUDApp.Shared.Interfaces;
+﻿using BlazorCRUDApp.Server.Data;
+using BlazorCRUDApp.Shared.Interfaces;
 using BlazorCRUDApp.Shared.Responses;
 using BlazorCRUDApp.Shared.Shared;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCRUDApp.Server.Controllers
 {
@@ -9,19 +11,28 @@ namespace BlazorCRUDApp.Server.Controllers
     [Route("api/[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly IProductService _productService;
-        public ProductController(IProductService productService)
+        private readonly AppDbContext _context; 
+        public ProductController(AppDbContext context)
         {
-            _productService = productService;
+            _context = context;
         }
+
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetAll()
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> Get()
         {
-            var result = await _productService.GetAllProductsAsync();
-            if (result.Success)
-                return Ok(result);
-            result.Success = false;
-            return BadRequest(result);
+            var response = new ServiceResponse<List<Product>>();
+            try
+            {
+                response.Data = await _context.Products.ToListAsync();
+                response.Success = true;
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+                return BadRequest(response);
+            }
         }
     }
 }

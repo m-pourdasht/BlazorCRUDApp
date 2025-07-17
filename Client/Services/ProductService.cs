@@ -14,9 +14,46 @@ namespace BlazorCRUDApp.Client.Services
         }
         public async Task<ServiceResponse<List<Product>>> GetAllProductsAsync()
         {
-            var response = await _httpService.GetAsync<List<Product>>("api/Product");
-            return response;
+            return await _httpService.Get<ServiceResponse<List<Product>>>("api/product");
+        }
+        public async Task CreateProductAsync(Product product)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "Product cannot be null");
+            }
+            await _httpService.Post("api/product", product);
+        }
+        public async Task<Product?> GetProductByIdAsync(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product ID", nameof(id));
+            }
+            return await _httpService.Get<Product>($"api/product/{id}");
+        }
+        public
+            async Task UpdateProductAsync(Product product)
+        {
+            if (product == null)
+            {
+                throw new ArgumentNullException(nameof(product), "Product cannot be null");
+            }
+            var existingProduct = await GetProductByIdAsync(product.Id);
+            if (existingProduct == null)
+            {
+                throw new KeyNotFoundException($"Product with ID {product.Id} not found");
+            }
+            await _httpService.Put("api/product", product);
         }
 
+        public Task DeleteProductAsync(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product ID", nameof(id));
+            }
+            return _httpService.Delete($"api/product/{id}");
+        }
     }
 }
