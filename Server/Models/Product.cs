@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel;
 
-namespace BlazorCRUDApp.Shared.Shared
+namespace BlazorCRUDApp.Server.Models
 {
     public class Product
     {

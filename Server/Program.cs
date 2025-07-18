@@ -4,7 +4,7 @@ using BlazorCRUDApp.Server.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using BlazorCRUDApp.Shared.Interfaces;
 using BlazorCRUDApp.Server.Services;
-using Microsoft.Extensions.DependencyInjection;
+using AutoMapper;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,10 +35,15 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddHttpClient(); // for HttpClient injection
+
+//to use HttpClient with a specific base address
 //builder.Services.AddHttpClient<IHttpService, HttpServiceServer>(client =>
 //{
 //    client.BaseAddress = new Uri("https://localhost:7194/api/"); 
 //});
+
+
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IHttpService, HttpServiceServer>();

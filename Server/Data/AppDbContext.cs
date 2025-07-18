@@ -1,7 +1,7 @@
 ﻿//It manages the connection to the database and maps your C# classes (Product, Category, etc.) to database tables.
 //EF Core class that manages tables (DbSet) and database connection settings.
 using BlazorCRUDApp.Client.Pages;
-using BlazorCRUDApp.Shared.Shared;
+using BlazorCRUDApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCRUDApp.Server.Data

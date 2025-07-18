@@ -1,6 +1,7 @@
 ﻿@page "/products"
-@using BlazorCRUDApp.Shared.Shared
+@using BlazorCRUDApp.Shared.Dtos
 @using BlazorCRUDApp.Client.Services
+@using BlazorCRUDApp.Shared.Interfaces
 
 <h3>Products</h3>
 
@@ -23,7 +24,7 @@ else
 }
 
 @code {
-    public List<Product>? products = null;
+    public List<ProductDto>? products = null;
 
     protected override async Task OnInitializedAsync()
     {
@@ -35,7 +36,7 @@ else
         }
         else
         {
-            products = new List<Product>();
+            products = new List<ProductDto>();
         }
     }
 }

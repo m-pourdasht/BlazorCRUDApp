@@ -1,19 +1,21 @@
 ﻿@page "/create-product"
 @using BlazorCRUDApp.Shared.Interfaces
-@using BlazorCRUDApp.Shared.Shared;
+@using BlazorCRUDApp.Shared.Dtos;
+@using BlazorCRUDApp.Client.Services;
+
 <h3>Create Product</h3>
 
 <EditForm Model="newProduct" OnValidSubmit="HandleCreate">
     <InputText @bind-Value="newProduct.Name" placeholder="Name" />
     <InputNumber @bind-Value="newProduct.Price" />
     <InputNumber @bind-Value="newProduct.CategoryId" />
-    <button type="submit">Create</button>
+    <button type="submit" @onclick="HandleCreate">Create</button>
 </EditForm>
 @code {
-    
-    private Product newProduct = new Product();
-    private void HandleCreate(EditContext args)
+
+    private ProductCreateDto newProduct = new ProductCreateDto();
+    private Task HandleCreate()
     {
-        throw new NotImplementedException();
+        return ProductService.CreateProductAsync(newProduct);
     }
 }
