@@ -10,5 +10,6 @@ namespace BlazorCRUDApp.Shared.Interfaces
         Task<ProductDto?> GetProductByIdAsync(int id);
         Task UpdateProductAsync(ProductUpdateDto product);
         Task DeleteProductAsync(int id);
+
     }
 }

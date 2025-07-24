@@ -1,0 +1,99 @@
+﻿@using BlazorCRUDApp.Shared.Dtos
+@using Microsoft.AspNetCore.Components
+
+<div class="card mt-5">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Project Items</h5>
+        <select @bind="selectedCategory" class="form-select w-auto">
+            @foreach (var category in Categories)
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (FilteredItems == null || !FilteredItems.Any())
+                {
+                    <tr><td colspan="4">No products found</td></tr>
+                }
+                else
+                {
+                    @foreach (var product in FilteredItems)
+                    {
+                        @RowTemplate(product)
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment<ProductDto>? RowTemplate { get; set; }
+
+    [Parameter] public List<ProductDto> Products { get; set; } = new();
+    [Parameter] public List<CategoryDto> Categories { get; set; } = new();
+
+    private string selectedCategory = "All";
+
+    private IEnumerable<ProductDto> FilteredItems =>
+      selectedCategory == "All"
+      ? Products
+      : Products.Where(p => p.CategoryName == selectedCategory);
+}
+
+
+
+
+@* <div class="card mt-5">
+    <div class="card-header">
+        <h5>Project Items</h5>
+        <select @bind="selectedCategory" class="dropdown">
+            @foreach (var category in categories)
+            {
+                <option value="@category.Name">@category.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="card-body">
+        @foreach (var item in FilteredItems)
+        {
+            <div class="card-item">@item.Name</div>
+        }
+    </div>
+</div>
+
+@code {
+    private string selectedCategory = "All";
+    private List<ProductDto> items = new();
+    private List<CategoryDto> categories = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            items = (await ProductService.GetAllProductsAsync()).Data;
+            categories = (await CategoryService.GetAllCategoriesAsync()).Data;
+            categories.Insert(0, new CategoryDto { Name = "All" });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching data: {ex.Message}");
+        }
+    }
+
+    private IEnumerable<ProductDto> FilteredItems =>
+        selectedCategory == "All" ? items : items.Where(i => i.CategoryName == selectedCategory);
+} *@

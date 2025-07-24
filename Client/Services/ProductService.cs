@@ -31,17 +31,15 @@ namespace BlazorCRUDApp.Client.Services
             }
             return await _httpService.Get<ProductDto>($"api/product/{id}");
         }
-        public
-            async Task UpdateProductAsync(ProductUpdateDto product)
+        public async Task UpdateProductAsync(ProductUpdateDto product)
         {
             if (product == null)
             {
                 throw new ArgumentNullException(nameof(product), "Product cannot be null");
             }
-            var existingProduct = await GetProductByIdAsync(product.Id);
-            if (existingProduct == null)
+            if (product.Id <= 0)
             {
-                throw new KeyNotFoundException($"Product with ID {product.Id} not found");
+                throw new ArgumentException("Invalid product ID", nameof(product.Id));
             }
             await _httpService.Put("api/product", product);
         }

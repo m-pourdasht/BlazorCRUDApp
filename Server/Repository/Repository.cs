@@ -1,6 +1,5 @@
 ﻿using BlazorCRUDApp.Server.Repository.Interfaces;
 using BlazorCRUDApp.Server.Data;
-using BlazorCRUDApp.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCRUDApp.Server.Repository

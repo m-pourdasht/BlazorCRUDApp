@@ -1,5 +1,4 @@
 ﻿//It is used to manage dependencies and transactions between repositories.
-
 using BlazorCRUDApp.Server.Data;
 using BlazorCRUDApp.Server.Repository;
 using BlazorCRUDApp.Server.Repository.Interfaces;

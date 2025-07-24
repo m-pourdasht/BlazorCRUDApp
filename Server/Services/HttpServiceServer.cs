@@ -1,6 +1,4 @@
 ﻿using BlazorCRUDApp.Shared.Interfaces;
-using Microsoft.Exchange.WebServices.Data;
-using System.Net.Http.Json;
 using BlazorCRUDApp.Shared.Responses;
 
 namespace BlazorCRUDApp.Server.Services
@@ -13,14 +11,14 @@ namespace BlazorCRUDApp.Server.Services
             _httpClient = httpClient;
         }
 
-        public System.Threading.Tasks.Task Delete(string url)
+        public async Task<T> Get<T>(string url)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<T> Get<T>(string url)
-        {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Error retrieving data from {url}: {response.ReasonPhrase}");
+            }
+            return await response.Content.ReadFromJsonAsync<T>() ?? throw new InvalidOperationException("Response content is null");
         }
 
         public async Task<ServiceResponse<T>> GetAsync<T>(string url)
@@ -34,8 +32,7 @@ namespace BlazorCRUDApp.Server.Services
             };
 
         }
-        public
-            async System.Threading.Tasks.Task Post<T>(string url, T data)
+        public async Task Post<T>(string url, T data)
         {
             var response = await _httpClient.PostAsJsonAsync(url, data);
             if (!response.IsSuccessStatusCode)
@@ -44,7 +41,7 @@ namespace BlazorCRUDApp.Server.Services
             }
         }
         public
-            async System.Threading.Tasks.Task Put<T>(string url, T data)
+            async Task Put<T>(string url, T data)
         {
             var response = await _httpClient.PutAsJsonAsync(url, data);
             if (!response.IsSuccessStatusCode)
@@ -52,5 +49,14 @@ namespace BlazorCRUDApp.Server.Services
                 throw new HttpRequestException($"Error updating data at {url}: {response.ReasonPhrase}");
             }
         }
+        public async Task Delete(string url)
+        {
+            var response = await _httpClient.DeleteAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Error deleting data at {url}: {response.ReasonPhrase}");
+            }
+        }
+
     }
 }

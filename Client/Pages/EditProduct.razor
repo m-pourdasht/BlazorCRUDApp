@@ -1,0 +1,103 @@
+﻿@page "/edit-product/{ProductId:int}" // This makes it a standalone page
+@using BlazorCRUDApp.Shared.Interfaces;
+@using BlazorCRUDApp.Shared.Dtos;
+@using BlazorCRUDApp.Client.Services;
+@inject IProductService ProductService // Make sure it's IProductService
+@inject NavigationManager Navigation
+
+@if (productToEdit == null)
+{
+    <span class="spinner spinner-border"></span>
+}
+else
+{
+    <h3>Edit Product</h3>
+    <EditForm Model="productToEdit" OnValidSubmit="HandleUpdate">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label>Name:</label>
+            <InputText @bind-Value="productToEdit.Name" class="form-control" placeholder="Name" />
+            <ValidationMessage For="@(() => productToEdit.Name)" />
+        </div>
+        <div class="form-group">
+            <label>Price:</label>
+            <InputNumber @bind-Value="productToEdit.Price" class="form-control" />
+            <ValidationMessage For="@(() => productToEdit.Price)" />
+        </div>
+        <div class="form-group">
+            <label>Category ID:</label>
+            <InputNumber @bind-Value="productToEdit.CategoryId" class="form-control" />
+            <ValidationMessage For="@(() => productToEdit.CategoryId)" />
+        </div>
+        <div class="mt-5">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" class="btn btn-secondary" @onclick="GoBackToList">Cancel</button>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Parameter]
+    public int ProductId { get; set; }
+
+    private ProductUpdateDto? productToEdit;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var productDto = await ProductService.GetProductByIdAsync(ProductId);
+
+            if (productDto == null)
+            {
+                Navigation.NavigateTo("/products");
+                return;
+            }
+            if (ProductId <= 0)
+            {
+                Navigation.NavigateTo("/products");
+                return;
+            }
+            productToEdit = new ProductUpdateDto
+            {
+                Id = ProductId,
+                Name = productDto.Name,
+                Price = productDto.Price,
+                CategoryId = productDto.CategoryId
+            };
+        }
+        catch (Exception ex)
+        {
+            Navigation.NavigateTo("/products");
+        }
+
+    }
+
+    private async Task HandleUpdate()
+    {
+        if (productToEdit == null)
+        {
+            return; // No product to update
+        }
+        try
+        {
+            await ProductService.UpdateProductAsync(productToEdit);
+            StateHasChanged();
+
+            // Navigate back to the product list
+            GoBackToList();
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions, e.g., show an error message
+            Console.WriteLine("An error occurred while updating the product: " + ex.Message);
+        }
+    }
+
+    private void GoBackToList()
+    {
+        // Only navigate back. Do NOT invoke OnProductEdited here if it's a standalone page.
+        // If OnProductEdited was removed, this method is clean.
+        Navigation.NavigateTo("/products");
+    }
+}

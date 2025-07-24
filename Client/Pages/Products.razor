@@ -1,42 +1,80 @@
 ﻿@page "/products"
 @using BlazorCRUDApp.Shared.Dtos
 @using BlazorCRUDApp.Client.Services
-@using BlazorCRUDApp.Shared.Interfaces
+@inject IProductService ProductService
+@inject ICategoryService CategoryService
+@inject NavigationManager Navigation
 
-<h3>Products</h3>
+<h3>Product List</h3>
 
-@if (products == null)
+@if (products == null || categories == null)
 {
-    <span class="spinner spinner-border"></span>
-}
-else if (products.Count == 0)
-{
-    <p>No products found.</p>
+    <p>Loading...</p>
 }
 else
 {
-    <ul>
-        @foreach (var product in products)
-        {
-            <li>@product.Name - @product.Price </li>
-        }
-    </ul>
+    <DropDown Products="products" Categories="categories" RowTemplate="rowTemplate">
+    </DropDown>
 }
 
+<CreateProduct OnProductCreated="CreateProductHandler" />
+
 @code {
-    public List<ProductDto>? products = null;
+    private List<ProductDto> products = new();
+    private List<CategoryDto> categories = new();
+    private RenderFragment<ProductDto> rowTemplate;
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await ProductService.GetAllProductsAsync();
+        // await LoadData();
+        await CreateProductHandler();
 
-        if (response.Success && response.Data != null)
+        rowTemplate = (product) => @<tr>
+            <td>@product.Name</td>
+            <td>@product.Price</td>
+            <td>@product.CategoryName</td>
+            <td>
+                <button class="btn btn-primary btn-sm me-1" @onclick="() => EditProductHandler(product.Id)">Edit</button>
+                <button class="btn btn-danger btn-sm" @onclick="() => DeleteProductHandler(product)">Delete</button>
+            </td>
+        </tr>;
+    }
+    private async Task CreateProductHandler()
+    {
+        try
         {
-            products = response.Data;
+            var productResult = await ProductService.GetAllProductsAsync();
+            var categoryResult = await CategoryService.GetAllCategoriesAsync();
+
+            if (productResult.Success)
+                products = productResult.Data;
+
+            if (categoryResult.Success)
+            {
+                categories = categoryResult.Data;
+                categories.Insert(0, new CategoryDto { Name = "All" });
+            }
         }
-        else
+        catch (Exception ex)
         {
-            products = new List<ProductDto>();
+            Console.WriteLine($"Error loading data: {ex.Message}");
         }
+    }
+
+    private async Task DeleteProductHandler(ProductDto product)
+    {
+        await ProductService.DeleteProductAsync(product.Id);
+        // await LoadData();
+        await CreateProductHandler(); // Refresh the product list after deletion
+    }
+
+    // private async Task CreateProductHandler()
+    // {
+    //     await LoadData();
+    // }
+
+    private void EditProductHandler(int id)
+    {
+        Navigation.NavigateTo($"/edit-product/{id}");
     }
 }

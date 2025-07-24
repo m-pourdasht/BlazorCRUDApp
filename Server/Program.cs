@@ -46,6 +46,7 @@ builder.Services.AddHttpClient(); // for HttpClient injection
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IHttpService, HttpServiceServer>();
 
 
