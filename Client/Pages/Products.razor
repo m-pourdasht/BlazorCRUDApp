@@ -13,34 +13,40 @@
 }
 else
 {
-    <DropDown Products="products" Categories="categories" RowTemplate="rowTemplate">
+    <DropDown @ref="childRef" Products="products" Categories="categories" >
+
+    @if (childRef != null)
+    {
+        foreach (var product in childRef.GetFilteredItems())
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price</td>
+                <td>@product.CategoryName</td>
+                <td>
+                    <button class="btn btn-primary btn-sm me-1" @onclick="() => EditProductHandler(product.Id)">Edit</button>
+                    <button class="btn btn-danger btn-sm" @onclick="() => DeleteProductHandler(product)">Delete</button>
+                </td>
+            </tr>
+        }
+    }
     </DropDown>
 }
-
 <CreateProduct OnProductCreated="CreateProductHandler" />
 
 @code {
     private List<ProductDto> products = new();
     private List<CategoryDto> categories = new();
     private RenderFragment<ProductDto> rowTemplate;
+    private DropDown? childRef;
 
     protected override async Task OnInitializedAsync()
     {
-        // await LoadData();
         await CreateProductHandler();
-
-        rowTemplate = (product) => @<tr>
-            <td>@product.Name</td>
-            <td>@product.Price</td>
-            <td>@product.CategoryName</td>
-            <td>
-                <button class="btn btn-primary btn-sm me-1" @onclick="() => EditProductHandler(product.Id)">Edit</button>
-                <button class="btn btn-danger btn-sm" @onclick="() => DeleteProductHandler(product)">Delete</button>
-            </td>
-        </tr>;
     }
     private async Task CreateProductHandler()
     {
+        // childRef?.FilteredItems?.Invoke();
         try
         {
             var productResult = await ProductService.GetAllProductsAsync();
@@ -64,14 +70,8 @@ else
     private async Task DeleteProductHandler(ProductDto product)
     {
         await ProductService.DeleteProductAsync(product.Id);
-        // await LoadData();
         await CreateProductHandler(); // Refresh the product list after deletion
     }
-
-    // private async Task CreateProductHandler()
-    // {
-    //     await LoadData();
-    // }
 
     private void EditProductHandler(int id)
     {

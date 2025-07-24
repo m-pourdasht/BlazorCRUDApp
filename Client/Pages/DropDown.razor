@@ -11,7 +11,6 @@
             }
         </select>
     </div>
-
     <div class="card-body">
         <table class="table">
             <thead>
@@ -23,31 +22,25 @@
                 </tr>
             </thead>
             <tbody>
-                @if (FilteredItems == null || !FilteredItems.Any())
-                {
-                    <tr><td colspan="4">No products found</td></tr>
-                }
-                else
-                {
-                    @foreach (var product in FilteredItems)
-                    {
-                        @RowTemplate(product)
-                    }
-                }
+                @childContent
             </tbody>
         </table>
     </div>
 </div>
 
 @code {
-    [Parameter] public RenderFragment<ProductDto>? RowTemplate { get; set; }
+    [Parameter] 
+    public RenderFragment? childContent { get; set; }
 
-    [Parameter] public List<ProductDto> Products { get; set; } = new();
-    [Parameter] public List<CategoryDto> Categories { get; set; } = new();
+    [Parameter] 
+    public List<ProductDto> Products { get; set; } = new();
+
+    [Parameter] 
+    public List<CategoryDto> Categories { get; set; } = new();
 
     private string selectedCategory = "All";
 
-    private IEnumerable<ProductDto> FilteredItems =>
+    public IEnumerable<ProductDto> GetFilteredItems() =>
       selectedCategory == "All"
       ? Products
       : Products.Where(p => p.CategoryName == selectedCategory);
