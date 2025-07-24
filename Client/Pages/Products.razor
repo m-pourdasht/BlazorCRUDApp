@@ -17,7 +17,7 @@ else
 
     @if (childRef != null)
     {
-        foreach (var product in childRef.GetFilteredItems())
+            foreach (var product in childRef.FilteredItems)
         {
             <tr>
                 <td>@product.Name</td>
@@ -37,7 +37,6 @@ else
 @code {
     private List<ProductDto> products = new();
     private List<CategoryDto> categories = new();
-    private RenderFragment<ProductDto> rowTemplate;
     private DropDown? childRef;
 
     protected override async Task OnInitializedAsync()
@@ -46,7 +45,7 @@ else
     }
     private async Task CreateProductHandler()
     {
-        // childRef?.FilteredItems?.Invoke();
+
         try
         {
             var productResult = await ProductService.GetAllProductsAsync();
@@ -60,6 +59,7 @@ else
                 categories = categoryResult.Data;
                 categories.Insert(0, new CategoryDto { Name = "All" });
             }
+            childRef?.UpdateFilteredItems();
         }
         catch (Exception ex)
         {

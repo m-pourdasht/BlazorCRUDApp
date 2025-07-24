@@ -4,7 +4,7 @@
 <div class="card mt-5">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Project Items</h5>
-        <select @bind="selectedCategory" class="form-select w-auto">
+        <select @onchange="OnCategoryChanged" class="form-select w-auto">
             @foreach (var category in Categories)
             {
                 <option value="@category.Name">@category.Name</option>
@@ -28,23 +28,47 @@
     </div>
 </div>
 
+
 @code {
-    [Parameter] 
+    [Parameter]
     public RenderFragment? childContent { get; set; }
 
-    [Parameter] 
+    [Parameter]
     public List<ProductDto> Products { get; set; } = new();
 
-    [Parameter] 
+    [Parameter]
     public List<CategoryDto> Categories { get; set; } = new();
 
     private string selectedCategory = "All";
 
-    public IEnumerable<ProductDto> GetFilteredItems() =>
-      selectedCategory == "All"
-      ? Products
-      : Products.Where(p => p.CategoryName == selectedCategory);
+    public IEnumerable<ProductDto> FilteredItems { get; set; } = new List<ProductDto>();
+
+    private void OnCategoryChanged(ChangeEventArgs e)
+    {
+        selectedCategory = e.Value?.ToString() ?? "All";
+        UpdateFilteredItems();
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateFilteredItems();
+    }
+
+    public void UpdateFilteredItems()
+    {
+        if (selectedCategory == "All")
+        {
+            FilteredItems = Products;
+        }
+        else
+        {
+            FilteredItems = Products
+                .Where(p => string.Equals(p.CategoryName, selectedCategory, StringComparison.OrdinalIgnoreCase));
+        }
+        StateHasChanged();
+    }
 }
+
 
 
 
