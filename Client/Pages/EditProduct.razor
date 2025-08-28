@@ -16,7 +16,7 @@ else
         <DataAnnotationsValidator />
         <div class="form-group">
             <label>Name:</label>
-            <InputText @bind-Value="productToEdit.Name" class="form-control" placeholder="Name" />
+            <InputText @bind-Value="productToEdit.Name" class="form-control" />
             <ValidationMessage For="@(() => productToEdit.Name)" />
         </div>
         <div class="form-group">
@@ -44,33 +44,48 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        Console.WriteLine($"OnInitializedAsync called for ProductId: {ProductId}");
+
         try
         {
-            var productDto = await ProductService.GetProductByIdAsync(ProductId);
-
-            if (productDto == null)
-            {
-                Navigation.NavigateTo("/products");
-                return;
-            }
+            // Debugging step 1: Check if ProductId is received correctly
             if (ProductId <= 0)
             {
+                Console.WriteLine("ProductId is invalid or 0. Navigating back.");
                 Navigation.NavigateTo("/products");
                 return;
             }
-            productToEdit = new ProductUpdateDto
+
+            var productDto = await ProductService.GetProductByIdAsync(ProductId);
+
+            // Debugging step 2: Check what GetProductByIdAsync returns
+            if (productDto == null)
             {
-                Id = ProductId,
-                Name = productDto.Name,
-                Price = productDto.Price,
-                CategoryId = productDto.CategoryId
-            };
+                Console.WriteLine($"Product with ID {ProductId} not found. Navigating back.");
+                Navigation.NavigateTo("/products");
+                return;
+            }
+
+            // Debugging step 3: Check the values within the productDto
+            Console.WriteLine($"ProductDto received: ID={productDto.Id}, Name={productDto.Name}, Price={productDto.Price}, CategoryId={productDto.CategoryId}");
+
+            productToEdit = new ProductUpdateDto
+                {
+                    Id = ProductId,
+                    Name = productDto.Name,
+                    Price = productDto.Price,
+                    CategoryId = productDto.CategoryId
+                };
+
+            // Debugging step 4: Check the values in productToEdit after assignment
+            Console.WriteLine($"productToEdit assigned: Name={productToEdit.Name}, Price={productToEdit.Price}, CategoryId={productToEdit.CategoryId}");
         }
         catch (Exception ex)
         {
+            Console.Error.WriteLine($"Error loading product for editing: {ex.Message}");
+            // Consider showing a user-friendly error message here
             Navigation.NavigateTo("/products");
         }
-
     }
 
     private async Task HandleUpdate()
