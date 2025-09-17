@@ -8,3 +8,33 @@
 Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+<ChildComponent OnTest="OnTestHandler"
+                Value="Name"
+                ValueChanged="OnValueChanged"
+                status="@status"
+                ButtonCallbackMessage="@clickedButton" />
+
+<p>@Name</p>
+
+
+<ValueTuple />
+
+@code {
+
+    private string Name { get; set; } = "Initial Value";
+
+    private string clickedButton { get; set; } = "Callback from Products component received in Index.razor";
+
+    private string status { get; set; } = "hidden";
+
+    private void OnTestHandler()
+    {
+        status = "visible";
+    }
+
+    private void OnValueChanged(string newValue)
+    {
+        Name = newValue;
+    }
+}

@@ -1,0 +1,33 @@
+﻿<h3>ChildComponent</h3>
+<button class="mb-5" @onclick="textMethod">TestCallBack</button>
+<p style="visibility: @status;">@ButtonCallbackMessage</p>
+<br />
+<input @oninput="HandleInput" value="@Value" />
+
+@code {
+    [Parameter]
+    public EventCallback OnTest { get; set; }
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public string status { get; set; }
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public string ButtonCallbackMessage { get; set; } = string.Empty;
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task textMethod()
+    {
+        await OnTest.InvokeAsync();
+    }
+}

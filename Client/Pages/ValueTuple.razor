@@ -1,0 +1,41 @@
+﻿@* @implements IDisposable *@
+
+<h3>Timer</h3>
+
+<p>Time: @counter</p>
+
+@code {
+    private System.Threading.Timer _timer;
+    private int counter = 0;
+
+    // This method is called once every second
+    protected override void OnInitialized()
+    {
+        // Create a timer that repeats every 1000 milliseconds (1 second)
+        _timer = new System.Threading.Timer(
+            (state) =>
+            {
+                // This code runs in a separate thread.
+                // Dispatcher.InvokeAsync is used to update the UI from the main thread.
+                InvokeAsync(() =>
+                {
+                    counter++;
+                    StateHasChanged(); // Request component re-render
+                });
+            },
+            null,
+            0,
+            1000
+        );
+    }
+
+    // This method is called when the component is removed from the page.
+    // public void Dispose()
+    // {
+    //     // Stopping and releasing the timer resource
+    //     _timer?.Dispose();
+
+    //     // This line tells the GC that it does not need to run Finalize on this object.
+    //     GC.SuppressFinalize(this);
+    // }
+}
